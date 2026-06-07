@@ -20,16 +20,19 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoggingOut = false;
 
   Future<void> _logout() async {
+    final navigator = Navigator.of(context);
     setState(() => _isLoggingOut = true);
     await _authService.logout();
     if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
+    navigator.pushAndRemoveUntil(
       MaterialPageRoute(
-        builder: (_) => LoginScreen(
-          onLoggedIn: (user) => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => HomeScreen(user: user)),
-          ),
-        ),
+        builder:
+            (_) => LoginScreen(
+              onLoggedIn:
+                  (user) => navigator.pushReplacement(
+                    MaterialPageRoute(builder: (_) => HomeScreen(user: user)),
+                  ),
+            ),
       ),
       (_) => false,
     );
@@ -77,29 +80,34 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 16),
           FilledButton.icon(
-            onPressed: () => Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const ReportFormScreen())),
+            onPressed:
+                () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ReportFormScreen()),
+                ),
             icon: const Icon(Icons.note_add_outlined),
             label: const Text('Buat Laporan'),
           ),
           const SizedBox(height: 12),
           OutlinedButton.icon(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ReportHistoryScreen()),
-            ),
+            onPressed:
+                () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const ReportHistoryScreen(),
+                  ),
+                ),
             icon: const Icon(Icons.history),
             label: const Text('Riwayat Laporan'),
           ),
           const SizedBox(height: 12),
           OutlinedButton.icon(
             onPressed: _isLoggingOut ? null : _logout,
-            icon: _isLoggingOut
-                ? const SizedBox.square(
-                    dimension: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.logout),
+            icon:
+                _isLoggingOut
+                    ? const SizedBox.square(
+                      dimension: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                    : const Icon(Icons.logout),
             label: const Text('Logout'),
           ),
         ],
